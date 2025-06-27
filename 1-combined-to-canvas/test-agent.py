@@ -14,7 +14,9 @@ async def run(mcp_server: MCPServer):
     )
 
     # Use the `add` tool to add two numbers
-    message = "Make two circles I will be able see on the screen (not behind other circles), and make them the same color and smaller then the other circle on the screen."
+    message = (
+        "Make three circles in the shape of a triangle, each circle a different color."
+    )
     print(f"Running: {message}")
     result = await Runner.run(starting_agent=agent, input=message)
     print(result.final_output)

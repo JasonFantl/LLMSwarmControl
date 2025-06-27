@@ -108,4 +108,4 @@ async def get_canvas() -> list:
     return await send_to_browser("get_canvas")
 
 
-# mcp.run(transport="sse")
+mcp.run(transport="sse")

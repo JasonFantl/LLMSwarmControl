@@ -3,7 +3,7 @@ class Drone extends MapObject {
         super(id, position);
         this.velocity = createVector(); // Velocity is a p5.Vector
         this.swarm = swarm; // swarm is an object with the target position
-        this.size = 3; // Size of the drone
+        this.size = 5; // Size of the drone
         this.speed = 1; // Speed of the drone
     }
 
@@ -67,11 +67,20 @@ class Drone extends MapObject {
         // Seek swarm target with strength decreasing as drone gets closer
         let seek = p5.Vector.sub(this.swarm.target.position, this.position);
         let d = seek.mag();
-        // Strength decreases linearly as distance decreases (min 0, max 1)
-        let strength = constrain(d / 100, 0, 1);
-        seek.setMag(this.speed * strength);
-        seek.sub(this.velocity);
-        seek.limit(0.1 * strength);
+        let strength = 0;
+        if (this.swarm.is_encircling) {
+            if (d < this.swarm.radius) {
+                strength = -constrain((this.swarm.radius - d) / 10, 0, 1);
+            } else {
+                strength = constrain((d - this.swarm.radius) / 100, 0, 1);
+            }
+        } else {
+            strength = constrain(d / 200, 0, 1);
+        }
+
+        strength *= 0.5;
+
+        seek.setMag(this.speed).mult(strength);
 
 
         // Combine all forces

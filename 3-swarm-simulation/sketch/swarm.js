@@ -12,9 +12,20 @@ class Swarm extends MapObject {
     constructor(id, target) {
         super(id, target.position); // Call the parent constructor with id and position
         this.target = target; // target only needs to have a position
+        this.is_encircling = false; // Whether the swarm is encircling the target
+        this.radius = 50; // Radius of the swarm's encircling area
         this.color = color(random(255), random(255), random(255)); // Color of the swarm
 
         this.num_drones = 0; // Number of drones associated with this swarm
+    }
+
+    copy(new_id) {
+        // Create a new Swarm with the same target, encircling state, and radius, and with no drones
+        let new_swarm = new Swarm(new_id, this.target);
+        new_swarm.is_encircling = this.is_encircling;
+        new_swarm.radius = this.radius;
+
+        return new_swarm;
     }
 
     update() {

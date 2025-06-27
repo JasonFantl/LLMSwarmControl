@@ -28,8 +28,10 @@ wss.on("connection", (socket) => {
                     socket.send(JSON.stringify({ error: "No browser connected" }));
                     return;
                 }
+                console.log(`[IN] from agent:`, msg.toString()); // Log incoming from agent
                 connections.browser.send(msg.toString());
                 connections.browser.once("message", (response) => {
+                    console.log(`[OUT] to agent:`, response.toString()); // Log outgoing to agent
                     socket.send(response.toString());
                 });
             });
