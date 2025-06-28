@@ -191,5 +191,4 @@ async def set_swarm_encircle(swarm_id: int, is_encircling: bool, radius: float) 
 
 
 if __name__ == "__main__":
-    # Run the MCP server
     mcp.run(transport="sse")
