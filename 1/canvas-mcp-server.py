@@ -125,6 +125,7 @@ def remove_shapes(shape_ids: list) -> bool:
     Returns:
         bool: True if all shapes were found and removed, False if any shape was not found.
     """
+    global shapes
     initial_count = len(shapes)
     shapes = [shape for shape in shapes if shape["id"] not in shape_ids]
     return len(shapes) < initial_count
