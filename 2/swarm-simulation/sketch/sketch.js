@@ -40,6 +40,8 @@ function draw() {
     drone.update();
     drone.display();
   }
+  droneGrid = nextDroneGrid; // update the drone grid for the next frame
+  nextDroneGrid = {}; // reset the next drone grid
 
   // update cars
   for (let car of cars) {
