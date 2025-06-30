@@ -23,9 +23,9 @@ function getNeighbors(drone) {
     return neighbors;
 }
 
-class Drone extends MapObject {
-    constructor(id, position, swarm) {
-        super(id, position);
+class Drone {
+    constructor(position, swarm) {
+        this.position = position; // Position is a p5.Vector
         this.velocity = createVector(); // Velocity is a p5.Vector
         this.swarm = swarm; // swarm is an object with the target position
         this.size = 2; // Size of the drone
@@ -45,8 +45,6 @@ class Drone extends MapObject {
 
             let separation = createVector();
             let alignment = createVector();
-            let totalSep = 0,
-                totalAli = 0;
 
             // Use grid to get neighbors
             const neighbors = getNeighbors(this);

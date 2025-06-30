@@ -34,13 +34,13 @@ async def get_environment() -> dict:
 
 @mcp.tool()
 async def reassign_drones(
-    source_swarm_id: int, target_swarm_id: int, num_drones: int
+    source_swarm_id: str, target_swarm_id: str, num_drones: int
 ) -> int:
     """
     Reassign a specified number of drones from one swarm to another.
     Args:
-        source_swarm_id (int): The ID of the swarm to move drones from.
-        target_swarm_id (int): The ID of the swarm to move drones to.
+        source_swarm_id (str): The ID of the swarm to move drones from.
+        target_swarm_id (str): The ID of the swarm to move drones to.
         num_drones (int): The number of drones to reassign.
     Returns:
         int: The number of drones actually reassigned.
@@ -60,14 +60,14 @@ async def reassign_drones(
 
 
 @mcp.tool()
-async def merge_swarm(source_swarm_id: int, target_swarm_id: int) -> int:
+async def merge_swarm(source_swarm_id: str, target_swarm_id: str) -> str:
     """
     Merge all drones from the source swarm into the target swarm and remove the source swarm.
     Args:
-        source_swarm_id (int): The ID of the swarm to merge from (will be removed).
-        target_swarm_id (int): The ID of the swarm to merge into (will remain).
+        source_swarm_id (str): The ID of the swarm to merge from (will be removed).
+        target_swarm_id (str): The ID of the swarm to merge into (will remain).
     Returns:
-        int: The ID of the swarm after merging (target_swarm_id).
+        str: The ID of the swarm after merging (target_swarm_id).
     Usage:
         Use this tool to combine two swarms into one, consolidating their drones and removing the source swarm.
     Effect:
@@ -81,16 +81,16 @@ async def merge_swarm(source_swarm_id: int, target_swarm_id: int) -> int:
 
 @mcp.tool()
 async def fork_swarm_to_follow(
-    source_swarm_id: int, num_drones: int, target_id: int
-) -> int:
+    source_swarm_id: str, num_drones: int, target_id: str
+) -> str:
     """
     Create a new swarm with a specified number of drones from an existing swarm, and assign it to follow a target entity.
     Args:
-        source_swarm_id (int): The ID of the swarm to split drones from.
+        source_swarm_id (str): The ID of the swarm to split drones from.
         num_drones (int): The number of drones to assign to the new swarm.
-        target_id (int): The ID of the entity for the new swarm to follow.
+        target_id (str): The ID of the entity for the new swarm to follow.
     Returns:
-        int: The ID of the newly created swarm.
+        str: The ID of the newly created swarm.
     Usage:
         Use this tool to split off a group of drones from an existing swarm and assign them to follow a new target (e.g., a car or another swarm).
     Effect:
@@ -108,17 +108,17 @@ async def fork_swarm_to_follow(
 
 @mcp.tool()
 async def fork_swarm_to_position(
-    source_swarm_id: int, num_drones: int, x: float, y: float
-) -> int:
+    source_swarm_id: str, num_drones: int, x: float, y: float
+) -> str:
     """
     Create a new swarm with a specified number of drones from an existing swarm, and assign it to a fixed position.
     Args:
-        source_swarm_id (int): The ID of the swarm to split drones from.
+        source_swarm_id (str): The ID of the swarm to split drones from.
         num_drones (int): The number of drones to assign to the new swarm.
         x (float): The X coordinate of the new target position.
         y (float): The Y coordinate of the new target position.
     Returns:
-        int: The ID of the newly created swarm.
+        str: The ID of the newly created swarm.
     Usage:
         Use this tool to split off a group of drones from an existing swarm and assign them to a new static position in the environment.
     Effect:
@@ -131,14 +131,14 @@ async def fork_swarm_to_position(
 
 
 @mcp.tool()
-async def assign_swarm_to_follow(swarm_id: int, target_id: int) -> int:
+async def assign_swarm_to_follow(swarm_id: str, target_id: str) -> str:
     """
     Change the target of a swarm to follow a new entity (car, swarm, or marker).
     Args:
-        swarm_id (int): The ID of the swarm to update.
-        target_id (int): The ID of the new target entity.
+        swarm_id (str): The ID of the swarm to update.
+        target_id (str): The ID of the new target entity.
     Returns:
-        int: The ID of the new target entity.
+        str: The ID of the new target entity.
     Usage:
         Use this tool to redirect a swarm to follow a different car, swarm, or marker.
     Effect:
@@ -150,11 +150,11 @@ async def assign_swarm_to_follow(swarm_id: int, target_id: int) -> int:
 
 
 @mcp.tool()
-async def assign_swarm_to_position(swarm_id: int, x: float, y: float) -> dict:
+async def assign_swarm_to_position(swarm_id: str, x: float, y: float) -> dict:
     """
     Change the target of a swarm to a new fixed position in the environment.
     Args:
-        swarm_id (int): The ID of the swarm to update.
+        swarm_id (str): The ID of the swarm to update.
         x (float): The X coordinate of the new target position.
         y (float): The Y coordinate of the new target position.
     Returns:
@@ -170,11 +170,11 @@ async def assign_swarm_to_position(swarm_id: int, x: float, y: float) -> dict:
 
 
 @mcp.tool()
-async def set_swarm_encircle(swarm_id: int, is_encircling: bool, radius: float) -> bool:
+async def set_swarm_encircle(swarm_id: str, is_encircling: bool, radius: float) -> bool:
     """
     Set whether a swarm should encircle its target, and/or specify the encircling radius.
     Args:
-        swarm_id (int): The ID of the swarm to update.
+        swarm_id (str): The ID of the swarm to update.
         is_encircling (bool): Whether the swarm should encircle its target (True/False).
         radius (float): The radius of the encircling circle (in pixels or environment units).
     Returns:

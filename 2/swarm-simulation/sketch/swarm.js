@@ -73,9 +73,6 @@ class Swarm extends MapObject {
         stroke(0);
         fill(red(this.color), green(this.color), blue(this.color), 127); // 127 is half-transparent
         ellipse(this.position.x, this.position.y, swarm_display_size, swarm_display_size);
-        // show ID
-        fill(0);
-        textAlign(CENTER, CENTER);
-        text(this.id, this.position.x, this.position.y - 10);
+        display_id(this.id, this.position.x, this.position.y - marker_display_size * 3);
     }
 }

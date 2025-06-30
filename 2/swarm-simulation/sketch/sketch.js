@@ -1,6 +1,3 @@
-id_counter = 0; // Global counter for IDs
-
-
 drones = [];
 swarms = [];
 cars = [];
@@ -10,11 +7,11 @@ function setup() {
 
   // create some dummy swarms, drones, and cars
   for (let i = 0; i < 3; i++) {
-    let swarm = new Swarm(id_counter++, new TargetMarker(createVector(random(width), random(height))));
+    let swarm = new Swarm(generate_next_id(), new TargetMarker(createVector(random(width), random(height))));
     swarms.push(swarm);
   }
-  for (let i = 0; i < 1000; i++) {
-    let drone = new Drone(id_counter++, createVector(random(width), random(height)), swarms[i % swarms.length]);
+  for (let i = 0; i < 1200; i++) {
+    let drone = new Drone(createVector(random(width), random(height)), swarms[i % swarms.length]);
     drones.push(drone);
   }
   for (let i = 0; i < 2; i++) {
@@ -23,7 +20,7 @@ function setup() {
     for (let j = 0; j < 6; j++) {
       waypoints.push(createVector(random(width), random(height)));
     }
-    let car = new Car(id_counter++, createVector(random(width), random(height)), waypoints, 0.5);
+    let car = new Car(generate_next_id(), createVector(random(width), random(height)), waypoints, 0.5);
     cars.push(car);
   }
 
@@ -108,7 +105,7 @@ function merge_swarm(source_swarm_id, target_swarm_id) {
 function fork_swarm_to_follow(source_swarm_id, num_drones, target_id) {
   let source_swarm = swarms.find(m => m.id === source_swarm_id);
 
-  let new_swarm = source_swarm.copy(id_counter++);
+  let new_swarm = source_swarm.copy(generate_next_id());
 
   let target = get_entity(target_id);
   new_swarm.target = target;
@@ -123,7 +120,7 @@ function fork_swarm_to_follow(source_swarm_id, num_drones, target_id) {
 function fork_swarm_to_position(source_swarm_id, num_drones, x, y) {
   let source_swarm = swarms.find(m => m.id === source_swarm_id);
 
-  let new_swarm = source_swarm.copy(id_counter++);
+  let new_swarm = source_swarm.copy(generate_next_id());
   new_swarm.target = new TargetMarker(createVector(x, y));
   swarms.push(new_swarm);
 

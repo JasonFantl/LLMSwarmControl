@@ -47,12 +47,7 @@ class Car extends MapObject {
         rect(0, 0, this.size * 3, this.size * 1.5);
         pop();
 
-        // Show ID
-        stroke(0);
-        strokeWeight(1);
-        fill(0);
-        textAlign(CENTER, CENTER);
-        text(this.id, this.position.x, this.position.y - 10);
+        display_id(this.id, this.position.x, this.position.y - this.size * 3);
     }
 
 
