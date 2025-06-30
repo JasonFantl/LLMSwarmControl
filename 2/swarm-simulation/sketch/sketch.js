@@ -2,6 +2,13 @@ drones = [];
 swarms = [];
 cars = [];
 
+const display_modes = Object.freeze({
+  SWARM_ASSIGNMENT: "Swarm assignment",
+  DRONE_SPECIALIZATION: "Drone specialization",
+});
+
+let display_mode = display_modes.SWARM_ASSIGNMENT;
+
 function setup() {
   createCanvas(600, 600);
 
@@ -10,10 +17,17 @@ function setup() {
     let swarm = new Swarm(generate_next_id(), new TargetMarker(createVector(random(width), random(height))));
     swarms.push(swarm);
   }
-  for (let i = 0; i < 1200; i++) {
-    let drone = new Drone(createVector(random(width), random(height)), swarms[i % swarms.length]);
+
+  const drone_specializations_list = Object.values(drone_specializations);
+  for (let i = 0; i < 1000; i++) {
+    let drone_specialization = drone_specializations_list[i % drone_specializations_list.length];
+    let drone = new Drone(createVector(random(width), random(height)), drone_specialization, swarms[i % swarms.length]);
+    if (drone_specialization == drone_specializations.DECOY) {
+      drone.decoy_specialization = drone_specializations_list[i % (drone_specializations_list.length - 1)];
+    }
     drones.push(drone);
   }
+
   for (let i = 0; i < 2; i++) {
     // create 6 random waypoints per car
     waypoints = [];
@@ -152,4 +166,13 @@ function set_swarm_encircle(swarm_id, is_encircling, radius) {
   swarm.is_encircling = is_encircling; // Set the encircling state
   swarm.radius = radius; // Set the encircling radius
   return swarm.is_encircling;
+}
+
+function keyPressed() {
+  print(key);
+  if (key === '1') {
+    display_mode = display_modes.SWARM_ASSIGNMENT;
+  } else if (key === '2') {
+    display_mode = display_modes.DRONE_SPECIALIZATION;
+  }
 }

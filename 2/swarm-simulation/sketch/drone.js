@@ -23,10 +23,28 @@ function getNeighbors(drone) {
     return neighbors;
 }
 
+const drone_specializations = Object.freeze({
+    KAMIKAZE: "Kamikaze",
+    INTERCEPTOR: "Interceptor",
+    JAMMER: "Jammer",
+    RECONNAISSANCE: "Reconnaissance",
+    DECOY: "Decoy",
+});
+
+var drone_specialization_colors = {
+    [drone_specializations.KAMIKAZE]: [212, 54, 54],
+    [drone_specializations.INTERCEPTOR]: [162, 0, 184],
+    [drone_specializations.JAMMER]: [6, 179, 0],
+    [drone_specializations.RECONNAISSANCE]: [222, 154, 50],
+    [drone_specializations.DECOY]: [136, 136, 136]
+};
+
 class Drone {
-    constructor(position, swarm) {
+    constructor(position, specialization, swarm) {
         this.position = position; // Position is a p5.Vector
         this.velocity = createVector(); // Velocity is a p5.Vector
+        this.specialization = specialization;
+        this.decoy_specialization = null; // Only relevant if the specialization is DECOY
         this.swarm = swarm; // swarm is an object with the target position
         this.size = 2; // Size of the drone
         this.speed = 1; // Speed of the drone
@@ -54,21 +72,18 @@ class Drone {
             for (const other of neighbors) {
                 if (other === this) continue;
 
-                const dx = this.position.x - other.position.x;
-                const dy = this.position.y - other.position.y;
-                const distSq = dx * dx + dy * dy;
-                const minDistSq = (2 * this.size) * (2 * this.size);
-                const maxDistSq = boids_distance * boids_distance;
+                let diff = p5.Vector.sub(this.position, other.position);
+                let dist_from_centers = diff.mag();
+                let dist_from_edges = dist_from_centers - (this.size + other.size);
 
-                if (distSq < maxDistSq) {
-                    let diff = p5.Vector.sub(this.position, other.position);
+                if (dist_from_centers < boids_distance) {
 
-                    if (distSq < minDistSq) {
+                    if (dist_from_edges <= 0) {
                         // Strong repulsion if too close
                         diff.setMag(9999999);
                     } else {
                         // Normal separation force, inversely proportional to distance
-                        diff.setMag((maxDistSq - minDistSq) / Math.abs(distSq - minDistSq) - 1);
+                        diff.setMag((dist_from_edges - dist_from_centers + boids_distance) / dist_from_edges - 1);
                     }
                     separation.add(diff);
                     separationCount++;
@@ -121,19 +136,28 @@ class Drone {
     }
 
     display() {
-        // Set color based on swarm (if swarm has a color property, else default)
-        if (this.swarm) {
-            fill(this.swarm.color);
-        } else {
-            fill(150, 150, 150); // Default color if no swarm
-        }
-
-        noStroke();
         push();
         translate(this.position.x, this.position.y);
         // Rotate in direction of velocity
         rotate(this.velocity.heading());
-        // Draw triangle (drone)
+
+        // Indicate the specialization using the stroke
+
+
+        strokeWeight(1);
+
+        if (display_mode == display_modes.SWARM_ASSIGNMENT) {
+            fill(this.swarm.color);
+        } else if (display_mode == display_modes.DRONE_SPECIALIZATION) {
+            fill(color(...drone_specialization_colors[this.specialization]));
+
+            // outline with the decoy color if the decoy
+            if (this.specialization == drone_specializations.DECOY) {
+                fill(color(...drone_specialization_colors[this.decoy_specialization], 100));
+            }
+        }
+
+        noStroke();
         beginShape();
         vertex(this.size, 0);
         vertex(-this.size * 0.5, this.size * 0.5);
