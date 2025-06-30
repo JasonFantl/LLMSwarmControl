@@ -13,7 +13,7 @@ function setup() {
     let swarm = new Swarm(id_counter++, new TargetMarker(createVector(random(width), random(height))));
     swarms.push(swarm);
   }
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 1000; i++) {
     let drone = new Drone(id_counter++, createVector(random(width), random(height)), swarms[i % swarms.length]);
     drones.push(drone);
   }

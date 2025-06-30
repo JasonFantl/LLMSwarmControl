@@ -3,7 +3,7 @@ class Drone extends MapObject {
         super(id, position);
         this.velocity = createVector(); // Velocity is a p5.Vector
         this.swarm = swarm; // swarm is an object with the target position
-        this.size = 5; // Size of the drone
+        this.size = 2; // Size of the drone
         this.speed = 1; // Speed of the drone
     }
 
@@ -17,12 +17,12 @@ class Drone extends MapObject {
 
         // Boids parameters
         const separationDist = 20;
-        const alignmentDist = 60;
-        const cohesionDist = 60;
-        const separationWeight = 5.0;
-        const alignmentWeight = 0.1;
-        const cohesionWeight = 0.5;
-        const seekWeight = 2.0;
+        const alignmentDist = 20;
+        const cohesionDist = 40;
+        const separationWeight = 1.0;
+        const alignmentWeight = -0.1;
+        const cohesionWeight = 0.00;
+        const seekWeight = 3.0;
 
         let separation = createVector();
         let alignment = createVector();
@@ -36,8 +36,7 @@ class Drone extends MapObject {
             let d = p5.Vector.dist(this.position, other.position);
             if (d < separationDist) {
                 let diff = p5.Vector.sub(this.position, other.position);
-                diff.normalize();
-                diff.div(d); // Weight by distance
+                diff.setMag(separationDist / abs(d - 2 * this.size) - 1); // Weight by distance
                 separation.add(diff);
                 totalSep++;
             }
