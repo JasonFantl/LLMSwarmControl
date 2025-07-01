@@ -131,6 +131,38 @@ async def fork_swarm_to_position(
 
 
 @mcp.tool()
+async def fork_swarm_to_waypoints(
+    source_swarm_id: str, num_drones: int, waypoints: list, cycle: bool
+) -> str:
+    """
+    Create a new swarm with a specified number of drones from an existing swarm, and assign it to a fixed position.
+    Args:
+        source_swarm_id (str): The ID of the swarm to split drones from.
+        num_drones (int): The number of drones to assign to the new swarm.
+        waypoints (list): A list of dicts with positions.
+            Each dict should have keys: 'x', 'y'.
+        cycle (bool): A bool indicating if the swarm should cycle through the waypoints.
+            If False, the swarm will move through the waypoints and then stop at the last waypoint, otherwise, it will repeatably cycle through the waypoints.
+
+    Returns:
+        str: The ID of the newly created swarm.
+    Usage:
+        Use this tool to split off a group of drones from an existing swarm and assign them to a new static position in the environment.
+    Effect:
+        A new swarm is created, the specified number of drones are reassigned to it, and its target is set to the given (x, y) position.
+    """
+    return await send_to_browser(
+        "fork_swarm_to_waypoints",
+        {
+            "source_swarm_id": source_swarm_id,
+            "num_drones": num_drones,
+            "waypoints": waypoints,
+            "cycle": cycle,
+        },
+    )
+
+
+@mcp.tool()
 async def assign_swarm_to_follow(swarm_id: str, target_id: str) -> str:
     """
     Change the target of a swarm to follow a new entity (car, swarm, or marker).
@@ -138,7 +170,7 @@ async def assign_swarm_to_follow(swarm_id: str, target_id: str) -> str:
         swarm_id (str): The ID of the swarm to update.
         target_id (str): The ID of the new target entity.
     Returns:
-        str: The ID of the new target entity.
+        bool: Returns True if the swarms target was set, False if it was not set.
     Usage:
         Use this tool to redirect a swarm to follow a different car, swarm, or marker.
     Effect:
@@ -158,7 +190,7 @@ async def assign_swarm_to_position(swarm_id: str, x: float, y: float) -> dict:
         x (float): The X coordinate of the new target position.
         y (float): The Y coordinate of the new target position.
     Returns:
-        dict: The new target marker object (with position).
+        bool: Returns True if the swarms target position was set, False if it was not set.
     Usage:
         Use this tool to move a swarm's target to a specific (x, y) location in the environment.
     Effect:
@@ -166,6 +198,36 @@ async def assign_swarm_to_position(swarm_id: str, x: float, y: float) -> dict:
     """
     return await send_to_browser(
         "assign_swarm_to_position", {"swarm_id": swarm_id, "x": x, "y": y}
+    )
+
+
+@mcp.tool()
+async def assign_swarm_to_waypoints(
+    swarm_id: str, waypoints: list, cycle: bool
+) -> dict:
+    """
+    Change the target of a swarm to a new fixed position in the environment.
+    Args:
+        swarm_id (str): The ID of the swarm to update.
+        waypoints (list): A list of dicts with positions.
+            Each dict should have keys: 'x', 'y'.
+        cycle (bool): A bool indicating if the swarm should cycle through the waypoints.
+            If False, the swarm will move through the waypoints and then stop at the last waypoint, otherwise, it will repeatably cycle through the waypoints.
+
+    Returns:
+        bool: Returns True if the waypoints were set, False if they were not set.
+    Usage:
+        Use this tool to move a swarm's target to a specific (x, y) location in the environment.
+    Effect:
+        The swarm's target is updated to a new marker at the specified position, and it will move toward that point.
+    """
+    return await send_to_browser(
+        "assign_swarm_to_waypoints",
+        {
+            "swarm_id": swarm_id,
+            "waypoints": waypoints,
+            "cycle": cycle,
+        },
     )
 
 

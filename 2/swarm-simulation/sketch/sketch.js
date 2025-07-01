@@ -141,9 +141,9 @@ function fork_swarm_to_position(source_swarm_id, num_drones, x, y) {
   return fork_swarm_to(source_swarm_id, num_drones, new TargetMarker(createVector(x, y)));
 }
 
-function fork_swarm_to_waypoints(source_swarm_id, num_drones, waypoints) {
+function fork_swarm_to_waypoints(source_swarm_id, num_drones, waypoints, cycle) {
   return fork_swarm_to(source_swarm_id, num_drones, new WayPoints(
-    waypoints.map(([x, y]) => new TargetMarker(createVector(x, y)))
+    waypoints.map(coords => new TargetMarker(createVector(coords["x"], coords["y"]))), cycle
   ));
 }
 
@@ -151,7 +151,7 @@ function fork_swarm_to_waypoints(source_swarm_id, num_drones, waypoints) {
 function assign_swarm_to(swarm_id, target) {
   let swarm = swarms.find(m => m.id === swarm_id);
   swarm.target = target;
-  return target.id; // target set
+  return true;
 }
 
 function assign_swarm_to_follow(swarm_id, target_id) {
@@ -162,9 +162,9 @@ function assign_swarm_to_position(swarm_id, x, y) {
   return assign_swarm_to(swarm_id, new TargetMarker(createVector(x, y)));
 }
 
-function assign_swarm_to_waypoints(swarm_id, waypoints, cycling) {
+function assign_swarm_to_waypoints(swarm_id, waypoints, cycle) {
   return assign_swarm_to(swarm_id, new WayPoints(
-    waypoints.map(([x, y]) => new TargetMarker(createVector(x, y))), cycling
+    waypoints.map(coords => new TargetMarker(createVector(coords["x"], coords["y"]))), cycle
   ));
 }
 
