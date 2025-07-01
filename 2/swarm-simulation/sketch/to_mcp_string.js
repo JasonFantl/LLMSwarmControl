@@ -1,27 +1,20 @@
 // Assuming these classes are globally available or imported
 
-function get_environment() {
-    return {
-        swarms: swarms.map(s => s.describe()),
-        cars: cars.map(c => c.describe())
-    };
-}
-
 function describePosition(position) {
     return { x: Math.round(position.x), y: Math.round(position.y) };
 }
 
-TargetMarker.prototype.describe = function () {
+TargetMarker.prototype.describe = function (depth) {
     return {
         type: "coordinate",
         position: describePosition(this.position)
     };
 };
 
-WayPoints.prototype.describe = function () {
+WayPoints.prototype.describe = function (depth) {
     let waypoint_descriptions = [];
     for (let waypoint of this.waypoints) {
-        waypoint_descriptions.push(waypoint.describe());
+        waypoint_descriptions.push(waypoint.describe(depth + 1));
     }
     return {
         type: "waypoints",
@@ -29,7 +22,7 @@ WayPoints.prototype.describe = function () {
     }
 };
 
-Car.prototype.describe = function () {
+Car.prototype.describe = function (depth) {
     return {
         type: "car",
         id: this.id,
@@ -37,18 +30,27 @@ Car.prototype.describe = function () {
     };
 };
 
-Swarm.prototype.describe = function () {
+Swarm.prototype.describe = function (depth) {
+
     let desc = {
         type: "swarm",
         id: this.id,
-        center_of_mass: describePosition(this.position),
-        num_drones: this.num_drones,
-        num_drone_specializations: this.num_drone_specializations,
-        target: this.target.describe(),
-        is_encircling: this.is_encircling
     };
-    if (this.is_encircling) {
-        desc.radius = this.radius;
+
+    // only describe the full details of the swarm if this is the main description, helps avoid recursion (when two swarms are following each other)
+    if (depth == 0) {
+        desc = {
+            type: "swarm",
+            id: this.id,
+            center_of_mass: describePosition(this.position),
+            num_drones: this.num_drones,
+            num_drone_specializations: this.num_drone_specializations,
+            target: this.target.describe(depth + 1),
+            is_encircling: this.is_encircling
+        };
+        if (this.is_encircling) {
+            desc.radius = this.radius;
+        }
     }
     return desc;
 };

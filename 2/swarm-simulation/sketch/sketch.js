@@ -95,6 +95,36 @@ function deallocate_swarm(swarm_id) {
   return true;
 }
 
+function fork_swarm_to(source_swarm_id, num_drones, target) {
+  let source_swarm = swarms.find(m => m.id === source_swarm_id);
+
+  let new_swarm = source_swarm.copy(generate_next_id());
+
+  new_swarm.target = target;
+  swarms.push(new_swarm);
+
+  // Reassign drones from the original swarm to the new swarm
+  reassign_drones(source_swarm_id, new_swarm.id, num_drones);
+
+  return new_swarm.id; // id of new swarm
+}
+
+function assign_swarm_to(swarm_id, target) {
+  let swarm = swarms.find(m => m.id === swarm_id);
+  swarm.target = target;
+  return true;
+}
+
+// MPC functions
+// =========================
+
+function get_environment() {
+  return {
+    swarms: swarms.map(s => s.describe(0)),
+    cars: cars.map(c => c.describe(0))
+  };
+}
+
 function reassign_drones(source_swarm_id, target_swarm_id, num_drones) {
   let from_swarm = swarms.find(m => m.id === source_swarm_id);
   let to_swarm = swarms.find(m => m.id === target_swarm_id);
@@ -118,21 +148,6 @@ function merge_swarm(source_swarm_id, target_swarm_id) {
   return target_swarm_id; // id of the swarm after merging
 }
 
-// internal, not exposed the MCP
-function fork_swarm_to(source_swarm_id, num_drones, target) {
-  let source_swarm = swarms.find(m => m.id === source_swarm_id);
-
-  let new_swarm = source_swarm.copy(generate_next_id());
-
-  new_swarm.target = target;
-  swarms.push(new_swarm);
-
-  // Reassign drones from the original swarm to the new swarm
-  reassign_drones(source_swarm_id, new_swarm.id, num_drones);
-
-  return new_swarm.id; // id of new swarm
-}
-
 function fork_swarm_to_follow(source_swarm_id, num_drones, target_id) {
   return fork_swarm_to(source_swarm_id, num_drones, get_entity(target_id));
 }
@@ -145,13 +160,6 @@ function fork_swarm_to_waypoints(source_swarm_id, num_drones, waypoints, cycle) 
   return fork_swarm_to(source_swarm_id, num_drones, new WayPoints(
     waypoints.map(coords => new TargetMarker(createVector(coords["x"], coords["y"]))), cycle
   ));
-}
-
-// internal, nto exposed to MCP
-function assign_swarm_to(swarm_id, target) {
-  let swarm = swarms.find(m => m.id === swarm_id);
-  swarm.target = target;
-  return true;
 }
 
 function assign_swarm_to_follow(swarm_id, target_id) {
@@ -175,6 +183,8 @@ function set_swarm_encircle(swarm_id, is_encircling, radius) {
   swarm.radius = radius; // Set the encircling radius
   return swarm.is_encircling;
 }
+
+// =======================
 
 function keyPressed() {
   if (key === '1') {
