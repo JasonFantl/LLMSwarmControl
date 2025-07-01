@@ -40,6 +40,9 @@ function setup() {
 
   // for testing, attach a swarm to a car
   assign_swarm_to_follow(swarms[0].id, cars[0].id);
+
+  assign_swarm_to_waypoints(swarms[1].id, [[100, 100], [200, 100], [200, 200], [100, 200]], true);
+
 }
 
 function draw() {
@@ -71,8 +74,7 @@ function draw() {
 
 function get_entity(id) {
   // Find a drone, swarm, or car by ID
-  return drones.find(d => d.id === id) ||
-    swarms.find(s => s.id === id) ||
+  return swarms.find(s => s.id === id) ||
     cars.find(c => c.id === id);
 }
 
@@ -116,12 +118,12 @@ function merge_swarm(source_swarm_id, target_swarm_id) {
   return target_swarm_id; // id of the swarm after merging
 }
 
-function fork_swarm_to_follow(source_swarm_id, num_drones, target_id) {
+// internal, not exposed the MCP
+function fork_swarm_to(source_swarm_id, num_drones, target) {
   let source_swarm = swarms.find(m => m.id === source_swarm_id);
 
   let new_swarm = source_swarm.copy(generate_next_id());
 
-  let target = get_entity(target_id);
   new_swarm.target = target;
   swarms.push(new_swarm);
 
@@ -131,33 +133,39 @@ function fork_swarm_to_follow(source_swarm_id, num_drones, target_id) {
   return new_swarm.id; // id of new swarm
 }
 
-function fork_swarm_to_position(source_swarm_id, num_drones, x, y) {
-  let source_swarm = swarms.find(m => m.id === source_swarm_id);
-
-  let new_swarm = source_swarm.copy(generate_next_id());
-  new_swarm.target = new TargetMarker(createVector(x, y));
-  swarms.push(new_swarm);
-
-  // Reassign drones from the original swarm to the new swarm
-  reassign_drones(source_swarm_id, new_swarm.id, num_drones);
-
-  return new_swarm.id; // id of new swarm
+function fork_swarm_to_follow(source_swarm_id, num_drones, target_id) {
+  return fork_swarm_to(source_swarm_id, num_drones, get_entity(target_id));
 }
 
-function assign_swarm_to_follow(swarm_id, target_id) {
+function fork_swarm_to_position(source_swarm_id, num_drones, x, y) {
+  return fork_swarm_to(source_swarm_id, num_drones, new TargetMarker(createVector(x, y)));
+}
+
+function fork_swarm_to_waypoints(source_swarm_id, num_drones, waypoints) {
+  return fork_swarm_to(source_swarm_id, num_drones, new WayPoints(
+    waypoints.map(([x, y]) => new TargetMarker(createVector(x, y)))
+  ));
+}
+
+// internal, nto exposed to MCP
+function assign_swarm_to(swarm_id, target) {
   let swarm = swarms.find(m => m.id === swarm_id);
-  let target = get_entity(target_id);
-
   swarm.target = target;
-
   return target.id; // target set
 }
 
-function assign_swarm_to_position(swarm_id, x, y) {
-  let swarm = swarms.find(m => m.id === swarm_id);
+function assign_swarm_to_follow(swarm_id, target_id) {
+  return assign_swarm_to(swarm_id, get_entity(target_id));
+}
 
-  swarm.target = new TargetMarker(createVector(x, y)); // Set a new target marker at the specified position
-  return swarm.target;
+function assign_swarm_to_position(swarm_id, x, y) {
+  return assign_swarm_to(swarm_id, new TargetMarker(createVector(x, y)));
+}
+
+function assign_swarm_to_waypoints(swarm_id, waypoints, cycling) {
+  return assign_swarm_to(swarm_id, new WayPoints(
+    waypoints.map(([x, y]) => new TargetMarker(createVector(x, y))), cycling
+  ));
 }
 
 // Set the encircling state and radius for a swarm. This can also be used to just update the radius for a swarm already in the encircling state.
@@ -169,7 +177,6 @@ function set_swarm_encircle(swarm_id, is_encircling, radius) {
 }
 
 function keyPressed() {
-  print(key);
   if (key === '1') {
     display_mode = display_modes.SWARM_ASSIGNMENT;
   } else if (key === '2') {

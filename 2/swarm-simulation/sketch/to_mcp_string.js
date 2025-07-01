@@ -18,6 +18,17 @@ TargetMarker.prototype.describe = function () {
     };
 };
 
+WayPoints.prototype.describe = function () {
+    let waypoint_descriptions = [];
+    for (let waypoint of this.waypoints) {
+        waypoint_descriptions.push(waypoint.describe());
+    }
+    return {
+        type: "waypoints",
+        waypoints: waypoint_descriptions
+    }
+};
+
 Car.prototype.describe = function () {
     return {
         type: "car",
@@ -32,6 +43,7 @@ Swarm.prototype.describe = function () {
         id: this.id,
         center_of_mass: describePosition(this.position),
         num_drones: this.num_drones,
+        num_drone_specializations: this.num_drone_specializations,
         target: this.target.describe(),
         is_encircling: this.is_encircling
     };

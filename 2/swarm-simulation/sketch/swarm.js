@@ -8,6 +8,24 @@ class TargetMarker {
     }
 }
 
+class WayPoints {
+    constructor(waypoints, cycle) {
+        this.waypoints = waypoints;
+        this.cycle = cycle;
+    }
+
+    get position() {
+        return this.waypoints[0].position;
+    }
+
+    shift() {
+        let first_waypoint = this.waypoints.shift();
+        if (this.cycle) {
+            this.waypoints.push(first_waypoint)
+        }
+    }
+}
+
 class Swarm extends MapObject {
     constructor(id, target) {
         super(id, target.position); // Call the parent constructor with id and position
@@ -17,6 +35,7 @@ class Swarm extends MapObject {
         this.color = color(random(255), random(255), random(255)); // Color of the swarm
 
         this.num_drones = 0; // Number of drones associated with this swarm
+        this.num_drone_specializations = {};
     }
 
     copy(new_id) {
@@ -33,10 +52,14 @@ class Swarm extends MapObject {
         // set current position to the average location of all drones with this swarm
         let total = createVector();
         let count = 0;
+        let count_specializations = Object.fromEntries(
+            Object.values(drone_specializations).map(val => [val, 0])
+        );
         for (let drone of drones) {
             if (drone.swarm && drone.swarm.id === this.id) {
                 total.add(drone.position);
                 count++;
+                count_specializations[drone.specialization]++;
             }
         }
         if (count > 0) {
@@ -47,6 +70,19 @@ class Swarm extends MapObject {
 
         // Update the number of drones associated with this swarm
         this.num_drones = count;
+        this.num_drone_specializations = count_specializations;
+
+        // if we are following a waypoint, update when we get close enough to the next waypoint
+        if (this.target instanceof WayPoints) {
+            let distance = p5.Vector.dist(this.position, this.target.position);
+            if (distance < 10) {
+                if (this.target.waypoints.length > 1) {
+                    this.target.shift(); // move to next waypoint
+                } else if (this.target.waypoints.length == 1) {
+                    this.target = this.target.waypoints[0]; // replace waypoints with the remaining target
+                }
+            }
+        }
     }
 
     display() {

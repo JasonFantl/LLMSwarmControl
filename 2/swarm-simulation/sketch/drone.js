@@ -138,11 +138,7 @@ class Drone {
     display() {
         push();
         translate(this.position.x, this.position.y);
-        // Rotate in direction of velocity
         rotate(this.velocity.heading());
-
-        // Indicate the specialization using the stroke
-
 
         strokeWeight(1);
 
@@ -151,10 +147,9 @@ class Drone {
         } else if (display_mode == display_modes.DRONE_SPECIALIZATION) {
             fill(color(...drone_specialization_colors[this.specialization]));
 
-            // outline with the decoy color if the decoy
-            if (this.specialization == drone_specializations.DECOY) {
-                fill(color(...drone_specialization_colors[this.decoy_specialization], 100));
-            }
+            // if (this.specialization == drone_specializations.DECOY) {
+            //     fill(color(...drone_specialization_colors[this.decoy_specialization], 100));
+            // }
         }
 
         noStroke();
