@@ -47,8 +47,6 @@ class Car extends MapObject {
         rect(0, 0, this.size * 3, this.size * 1.5);
         pop();
 
-        display_id(this.id, this.position.x, this.position.y - this.size * 3);
+        display_id("Car " + this.id, this.position.x, this.position.y - this.size * 3);
     }
-
-
 }

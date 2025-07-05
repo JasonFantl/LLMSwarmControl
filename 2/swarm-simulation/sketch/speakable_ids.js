@@ -9,10 +9,3 @@ function generate_next_id() {
     id_counter++;
     return new_id;
 }
-
-function display_id(id, x, y) {
-    fill(0);
-    noStroke();
-    textAlign(CENTER, CENTER);
-    text(id, x, y);
-}

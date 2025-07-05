@@ -87,28 +87,14 @@ class Swarm extends MapObject {
 
     display() {
 
-        // show X for the target position and a circle for the current position
-        fill(this.color);
-        push();
-        translate(this.target.position.x, this.target.position.y);
-        rotate(radians(45));
-        noStroke();
-        // Draw colored cross with black outline at target position
-        stroke(0);
-        strokeWeight(swarm_display_size / 5);
-        line(-swarm_display_size / 2, 0, swarm_display_size / 2, 0);
-        line(0, -swarm_display_size / 2, 0, swarm_display_size / 2);
-        stroke(this.color);
-        strokeWeight(swarm_display_size / 5 - 1);
-        line(-swarm_display_size / 2, 0, swarm_display_size / 2, 0);
-        line(0, -swarm_display_size / 2, 0, swarm_display_size / 2);
-        pop();
+        draw_cross(this.target.position.x, this.target.position.y, swarm_display_size, this.color, 0);
 
         // Draw current position as a colored circle
         strokeWeight(1);
         stroke(0);
         fill(red(this.color), green(this.color), blue(this.color), 127); // 127 is half-transparent
         ellipse(this.position.x, this.position.y, swarm_display_size, swarm_display_size);
-        display_id(this.id, this.position.x, this.position.y - marker_display_size * 3);
+
+        display_id("Swarm " + this.id, this.position.x, this.position.y - marker_display_size * 3);
     }
 }

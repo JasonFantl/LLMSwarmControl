@@ -1,6 +1,7 @@
 drones = [];
 swarms = [];
 cars = [];
+landmarks = [];
 
 const display_modes = Object.freeze({
   SWARM_ASSIGNMENT: "Swarm assignment",
@@ -12,7 +13,7 @@ let display_mode = display_modes.SWARM_ASSIGNMENT;
 function setup() {
   createCanvas(600, 600);
 
-  // create some dummy swarms, drones, and cars
+  // create some dummy swarms and drones
   for (let i = 0; i < 3; i++) {
     let swarm = new Swarm(generate_next_id(), new TargetMarker(createVector(random(width), random(height))));
     swarms.push(swarm);
@@ -28,6 +29,7 @@ function setup() {
     drones.push(drone);
   }
 
+  // create cars
   for (let i = 0; i < 2; i++) {
     // create 6 random waypoints per car
     waypoints = [];
@@ -37,6 +39,13 @@ function setup() {
     let car = new Car(generate_next_id(), createVector(random(width), random(height)), waypoints, 0.5);
     cars.push(car);
   }
+
+  // create landmarks
+  for (let i = 0; i < 3; i++) {
+    let landmark = new Landmark(generate_next_id(), createVector(random(width), random(height)));
+    landmarks.push(landmark);
+  }
+
 
   // for testing, attach a swarm to a car
   assign_swarm_to_follow(swarms[0].id, cars[0].id);
@@ -69,13 +78,18 @@ function draw() {
     swarm.display();
   }
 
+  // display landmarks
+  for (let landmark of landmarks) {
+    landmark.display();
+  }
+
 }
 
 
 function get_entity(id) {
-  // Find a drone, swarm, or car by ID
   return swarms.find(s => s.id === id) ||
-    cars.find(c => c.id === id);
+    cars.find(c => c.id === id) ||
+    landmarks.find(c => c.id === id);
 }
 
 // not publicly exposed, used internally to deallocate a swarm

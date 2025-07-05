@@ -11,6 +11,13 @@ TargetMarker.prototype.describe = function (depth) {
     };
 };
 
+Landmark.prototype.describe = function (depth) {
+    return {
+        type: "landmark",
+        position: describePosition(this.position)
+    };
+};
+
 WayPoints.prototype.describe = function (depth) {
     let waypoint_descriptions = [];
     for (let waypoint of this.waypoints) {
