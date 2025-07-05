@@ -39,12 +39,20 @@ class Car extends MapObject {
         push();
         translate(this.position.x, this.position.y);
         rotate(angle);
+        rectMode(CENTER);
+
+        // wheels
+        fill(0);
+        noStroke();
+        rect(this.size, 0, this.size, this.size * 2.5);
+        rect(-this.size, 0, this.size, this.size * 2.5);
+
+        // body
         fill(this.color);
         stroke(0);
         strokeWeight(1);
-        // Draw the car as a rectangle pointing in the direction of movement
-        rectMode(CENTER);
         rect(0, 0, this.size * 3, this.size * 1.5);
+
         pop();
 
         display_id("Car " + this.id, this.position.x, this.position.y - this.size * 3);
