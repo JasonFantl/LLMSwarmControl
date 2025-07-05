@@ -87,7 +87,7 @@ class Swarm extends MapObject {
 
     display() {
 
-        draw_cross(this.target.position.x, this.target.position.y, swarm_display_size, this.color, 0);
+        draw_cross(this.target.position.x, this.target.position.y, swarm_display_size, PI / 4, this.color, 0);
 
         // Draw current position as a colored circle
         strokeWeight(1);

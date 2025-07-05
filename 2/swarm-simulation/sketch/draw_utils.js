@@ -1,10 +1,10 @@
 
-function draw_cross(x, y, size, fill_color, stroke_color) {
+function draw_cross(x, y, size, angle, fill_color, stroke_color) {
     // show X for the target position and a circle for the current position
     fill(fill_color);
     push();
     translate(x, y);
-    rotate(radians(45));
+    rotate(angle);
     noStroke();
     // Draw colored cross with black outline at target position
     stroke(stroke_color);

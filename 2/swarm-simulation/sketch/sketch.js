@@ -14,7 +14,7 @@ function setup() {
   createCanvas(600, 600);
 
   // create some dummy swarms and drones
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
     let swarm = new Swarm(generate_next_id(), new TargetMarker(createVector(random(width), random(height))));
     swarms.push(swarm);
   }
@@ -36,7 +36,7 @@ function setup() {
     for (let j = 0; j < 6; j++) {
       waypoints.push(createVector(random(width), random(height)));
     }
-    let car = new Car(generate_next_id(), createVector(random(width), random(height)), waypoints, 0.5);
+    let car = new Car(generate_next_id(), createVector(random(width), random(height)), waypoints, 1.0);
     cars.push(car);
   }
 
@@ -47,10 +47,10 @@ function setup() {
   }
 
 
-  // for testing, attach a swarm to a car
+  // for testing:
   assign_swarm_to_follow(swarms[0].id, cars[0].id);
-
-  assign_swarm_to_waypoints(swarms[1].id, [[100, 100], [200, 100], [200, 200], [100, 200]], true);
+  assign_swarm_to_waypoints(swarms[1].id, [{ "x": 100, "y": 100 }, { "x": 200, "y": 100 }, { "x": 200, "y": 200 }, { "x": 100, "y": 200 }], true);
+  assign_swarm_to_follow(swarms[2].id, landmarks[0].id);
 
 }
 
@@ -144,9 +144,16 @@ function reassign_drones(source_swarm_id, target_swarm_id, num_drones) {
   let to_swarm = swarms.find(m => m.id === target_swarm_id);
   if (!from_swarm || !to_swarm) return false;
 
-  let drones_to_reassign = drones.filter(d => d.swarm && d.swarm.id === source_swarm_id).slice(0, num_drones);
+  let drones_from_source = drones.filter(d => d.swarm && d.swarm.id === source_swarm_id);
+  let num_original_drones_in_source = drones_from_source.length;
+  let drones_to_reassign = drones_from_source.slice(0, num_drones);
   for (let drone of drones_to_reassign) {
     drone.swarm = to_swarm;
+  }
+
+  // remove the source swarm if all drones are moved out of it (could this come back to bite me later? LLMs may need to temporarily pass through this state)
+  if (drones_to_reassign.length == num_original_drones_in_source) {
+    deallocate_swarm(source_swarm_id);
   }
 
   return drones_to_reassign.length; // the number of drones reassigned

@@ -7,7 +7,7 @@ class Landmark extends MapObject {
     }
 
     display() {
-        draw_cross(this.position.x, this.position.y, this.size, 100, 0);
+        draw_cross(this.position.x, this.position.y, this.size, 0, 100, 0);
         display_id("Landmark " + this.id, this.position.x, this.position.y - this.size * 2);
     }
 }
