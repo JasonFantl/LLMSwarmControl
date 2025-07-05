@@ -60,6 +60,7 @@ class Drone {
             const separationWeight = 1.0;
             const alignmentWeight = -0.1;
             const seekWeight = 3.0;
+            const noFlyWeight = 3.0;
 
             let separation = createVector();
             let alignment = createVector();
@@ -119,11 +120,46 @@ class Drone {
 
             seek.setMag(this.speed).mult(strength);
 
+            // avoid no-fly zones
+            let avoid_no_fly_vector = createVector(0, 0);
+            for (let no_fly_zone of no_fly_zones) {
+
+                // calculate nearest point on the rect
+                const boundary_point = createVector(
+                    constrain(this.position.x,
+                        no_fly_zone.lower_left_corner.x,
+                        no_fly_zone.upper_right_corner.x),
+                    constrain(this.position.y,
+                        no_fly_zone.lower_left_corner.y,
+                        no_fly_zone.upper_right_corner.y));
+
+                // if we are inside the no-fly zone, push from center
+                if (this.position.x == boundary_point.x && this.position.y == boundary_point.y) {
+                    let center = createVector(
+                        (no_fly_zone.lower_left_corner.x + no_fly_zone.upper_right_corner.x) / 2,
+                        (no_fly_zone.lower_left_corner.y + no_fly_zone.upper_right_corner.y) / 2);
+                    let diff = p5.Vector.sub(this.position, center);
+                    diff.setMag(999);
+                    avoid_no_fly_vector.add(diff);
+                } else {
+                    let diff = p5.Vector.sub(this.position, boundary_point);
+                    let d = diff.mag();
+
+                    // if we’re inside the influence radius, push back
+                    if (d < boids_distance + this.size) {
+                        let strength = boids_distance / d - 1;
+                        diff.setMag(strength);
+                        avoid_no_fly_vector.add(diff);
+                    }
+                }
+            }
+
             // Combine all forces
             let steer = createVector();
             steer.add(separation.mult(separationWeight));
             steer.add(alignment.mult(alignmentWeight));
             steer.add(seek.mult(seekWeight));
+            steer.add(avoid_no_fly_vector.mult(noFlyWeight));
             this.velocity.add(steer);
             this.velocity.limit(this.speed);
             this.position.add(this.velocity);

@@ -3,6 +3,8 @@ swarms = [];
 cars = [];
 landmarks = [];
 
+no_fly_zones = [];
+
 const display_modes = Object.freeze({
   SWARM_ASSIGNMENT: "Swarm assignment",
   DRONE_SPECIALIZATION: "Drone specialization",
@@ -47,6 +49,10 @@ function setup() {
   }
 
 
+  // create no-fly zones
+  let no_fly_zone = new NoFlyZone(generate_next_id(), createVector(300, 300), createVector(500, 400));
+  no_fly_zones.push(no_fly_zone);
+
   // for testing:
   assign_swarm_to_follow(swarms[0].id, cars[0].id);
   assign_swarm_to_waypoints(swarms[1].id, [{ "x": 100, "y": 100 }, { "x": 200, "y": 100 }, { "x": 200, "y": 200 }, { "x": 100, "y": 200 }], true);
@@ -83,6 +89,10 @@ function draw() {
     landmark.display();
   }
 
+  // display no-fly zones
+  for (let no_fly_zone of no_fly_zones) {
+    no_fly_zone.display();
+  }
 }
 
 
@@ -136,7 +146,8 @@ function get_environment() {
   return {
     swarms: swarms.map(s => s.describe(0)),
     cars: cars.map(c => c.describe(0)),
-    landmarks: landmarks.map(c => c.describe(0))
+    landmarks: landmarks.map(c => c.describe(0)),
+    "no-fly zones": no_fly_zones.map(c => c.describe(0))
   };
 }
 

@@ -11,6 +11,15 @@ TargetMarker.prototype.describe = function (depth) {
     };
 };
 
+NoFlyZone.prototype.describe = function (depth) {
+    return {
+        type: "no-fly zone",
+        id: this.id,
+        lower_left_corner: describePosition(this.lower_left_corner),
+        upper_right_corner: describePosition(this.upper_right_corner)
+    };
+};
+
 Landmark.prototype.describe = function (depth) {
     return {
         type: "landmark",
