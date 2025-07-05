@@ -135,7 +135,8 @@ function assign_swarm_to(swarm_id, target) {
 function get_environment() {
   return {
     swarms: swarms.map(s => s.describe(0)),
-    cars: cars.map(c => c.describe(0))
+    cars: cars.map(c => c.describe(0)),
+    landmarks: landmarks.map(c => c.describe(0))
   };
 }
 

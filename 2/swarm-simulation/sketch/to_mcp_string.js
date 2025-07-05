@@ -14,6 +14,7 @@ TargetMarker.prototype.describe = function (depth) {
 Landmark.prototype.describe = function (depth) {
     return {
         type: "landmark",
+        id: this.id,
         position: describePosition(this.position)
     };
 };
