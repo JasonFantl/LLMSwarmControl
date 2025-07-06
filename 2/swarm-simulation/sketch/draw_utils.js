@@ -30,17 +30,13 @@ function draw_grid(resolution) {
 
     let line_sizes = [0.2, 0.1];
 
+    // vertical line
     for (let i = resolution; i < width; i += resolution) {
 
         strokeWeight(line_sizes[(i / resolution) % line_sizes.length]);
-
         stroke(100);
 
-        // horizontal line
         line(i, 0, i, height);
-
-        // vertical line
-        line(0, i, width, i);
 
         // coordinates
         fill(0);
@@ -49,11 +45,23 @@ function draw_grid(resolution) {
         textAlign(CENTER, CENTER);
         text(i + "x", i, 10);
         text(i + "x", i, height - 10);
+    }
 
+    // horizontal lines
+    for (let i = resolution; i < height; i += resolution) {
+
+        strokeWeight(line_sizes[(i / resolution) % line_sizes.length]);
+        stroke(100);
+
+        line(0, i, width, i);
+
+        // coordinates
+        fill(0);
+        noStroke();
+        textSize(8);
         textAlign(LEFT, CENTER);
         text(i + "y", 10, i);
         textAlign(RIGHT, CENTER);
         text(i + "y", width - 10, i);
-
     }
 }

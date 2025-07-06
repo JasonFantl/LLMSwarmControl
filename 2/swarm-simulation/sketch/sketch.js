@@ -13,7 +13,7 @@ const display_modes = Object.freeze({
 let display_mode = display_modes.SWARM_ASSIGNMENT;
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(800, 600);
 
   // create some dummy swarms and drones
   for (let i = 0; i < 4; i++) {
