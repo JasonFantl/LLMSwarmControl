@@ -27,9 +27,13 @@ function display_id(id, x, y) {
 }
 
 function draw_grid(resolution) {
+
+    let line_sizes = [0.2, 0.1];
+
     for (let i = resolution; i < width; i += resolution) {
 
-        strokeWeight(0.1);
+        strokeWeight(line_sizes[(i / resolution) % line_sizes.length]);
+
         stroke(100);
 
         // horizontal line
