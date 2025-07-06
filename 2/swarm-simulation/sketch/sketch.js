@@ -63,6 +63,7 @@ function setup() {
 function draw() {
   background(255);
 
+  draw_grid(50);
 
   // update drones
   for (let drone of drones) {

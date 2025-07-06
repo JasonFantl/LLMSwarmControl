@@ -21,6 +21,35 @@ function draw_cross(x, y, size, angle, fill_color, stroke_color) {
 function display_id(id, x, y) {
     fill(0);
     noStroke();
+    textSize(12);
     textAlign(CENTER, CENTER);
     text(id, x, y);
+}
+
+function draw_grid(resolution) {
+    for (let i = resolution; i < width; i += resolution) {
+
+        strokeWeight(0.1);
+        stroke(100);
+
+        // horizontal line
+        line(i, 0, i, height);
+
+        // vertical line
+        line(0, i, width, i);
+
+        // coordinates
+        fill(0);
+        noStroke();
+        textSize(8);
+        textAlign(CENTER, CENTER);
+        text(i + "x", i, 10);
+        text(i + "x", i, height - 10);
+
+        textAlign(LEFT, CENTER);
+        text(i + "y", 10, i);
+        textAlign(RIGHT, CENTER);
+        text(i + "y", width - 10, i);
+
+    }
 }
