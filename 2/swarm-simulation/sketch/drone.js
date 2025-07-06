@@ -86,6 +86,12 @@ class Drone {
                         // Normal separation force, inversely proportional to distance
                         diff.setMag((dist_from_edges - dist_from_centers + boids_distance) / dist_from_edges - 1);
                     }
+
+                    // separate more strongly with boids of the same swarm, allowing swarms to more easily pass through each other
+                    if (other.swarm == this.swarm) {
+                        diff.mult(2);
+                    }
+
                     separation.add(diff);
                     separationCount++;
 
