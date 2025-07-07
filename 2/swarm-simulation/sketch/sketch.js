@@ -159,6 +159,21 @@ function reassign_drones(source_swarm_id, target_swarm_id, num_drones) {
 
   let drones_from_source = drones.filter(d => d.swarm && d.swarm.id === source_swarm_id);
   let num_original_drones_in_source = drones_from_source.length;
+
+  const droneScores = new Map();
+  for (let d of drones_from_source) {
+    const to_score = d.position.dist(to_swarm.target.position);
+    const from_score = d.position.dist(from_swarm.target.position);
+
+    const score = to_score * to_score - from_score * from_score;
+    droneScores.set(d, score);
+  }
+
+  // sort using Map.get()
+  drones_from_source.sort((a, b) =>
+    droneScores.get(a) - droneScores.get(b)
+  );
+
   let drones_to_reassign = drones_from_source.slice(0, num_drones);
   for (let drone of drones_to_reassign) {
     drone.swarm = to_swarm;
